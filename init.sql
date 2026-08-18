@@ -1,0 +1,32 @@
+CREATE TABLE users (
+    id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    name VARCHAR(32) NOT NULL
+);
+
+CREATE TABLE auth_data (
+    login VARCHAR(32) PRIMARY KEY,
+    password_hash varchar(256) NOT NULL,
+    user_id INTEGER UNIQUE NOT NULL,
+
+    FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE sessions (
+    token_hash BYTEA PRIMARY KEY,
+    created_at TIMESTAMP NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    user_id INTEGER NOT NULL,
+
+    FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE notes (
+    id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    title VARCHAR(64) NOT NULL,
+    content VARCHAR(512),
+    author_id INTEGER NOT NULL,
+    is_private BOOLEAN NOT NULL,
+    created_at TIMESTAMP NOT NULL,
+
+    FOREIGN KEY(author_id) REFERENCES users(id) ON DELETE CASCADE
+);
